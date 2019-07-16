@@ -18,7 +18,6 @@ int main()
 	getValidInput(p1strategy, p2strategy);
 	Game game(p1strategy, p2strategy);
 	game.start();
-	std::cin.get();
 
 	return 0;
 }

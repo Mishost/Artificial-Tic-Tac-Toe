@@ -20,23 +20,26 @@ private:
 	void playFourthStrategy(char**& board) const;
 
 	bool canPlayToWin(char**& board) const;
-	bool findPlace(char**& board, int row, int col) const;
+	bool findPlace(char**& board, unsigned int row, unsigned int col) const;
 	bool canWin(char**& board, char symbol, bool putSymbol) const;
-	bool checkTileWin(char**& board, int row, int col, char symbol, bool putSymbol) const;
-	bool checkMiddleTileWin(char**& board, int row, int col, char symbol, bool putSymbol) const;
-	bool checkCornerTileWin(char**& board, int row, int col, char symbol, bool putSymbol) const;
+	bool checkTileWin(char**& board, unsigned int row, unsigned int col,
+		char symbol, bool putSymbol) const;
+	bool checkMiddleTileWin(char**& board, unsigned int row, unsigned int col,
+		char symbol, bool putSymbol) const;
+	bool checkCornerTileWin(char**& board, unsigned int row, unsigned int col,
+		char symbol, bool putSymbol) const;
 
 	bool wonLine(char**& board, bool checkRow) const;
 	char getOppSymbol() const;
-	bool isCornerTile(int row, int col) const;
-	bool isMiddleTile(int row, int col) const;
-	bool rowContainsSymbol(char**& board, int row, char symbol) const;
-	bool colContainsSymbol(char**& board, int col, char symbol) const;
-	bool diagContainsSymbol(char**& board, int diag, char symbol) const;
+	bool isCornerTile(unsigned int row, unsigned int col) const;
+	bool isMiddleTile(unsigned int row, unsigned int col) const;
+	bool rowContainsSymbol(char**& board, unsigned int row, char symbol) const;
+	bool colContainsSymbol(char**& board, unsigned int col, char symbol) const;
+	bool diagContainsSymbol(char**& board, unsigned int diag, char symbol) const;
 
-	bool placeSymbolInRow(char**& board, int row) const;
-	bool placeSymbolInCol(char**& board, int col) const;
-	bool placeSymbolInDiag(char**& board, int diag) const;
+	bool placeSymbolInRow(char**& board, unsigned int row) const;
+	bool placeSymbolInCol(char**& board, unsigned int col) const;
+	bool placeSymbolInDiag(char**& board, unsigned int diag) const;
 private:
 	unsigned int strategy;
 	char mSymbol; //X or O
