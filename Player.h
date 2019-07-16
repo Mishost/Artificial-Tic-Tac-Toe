@@ -34,9 +34,9 @@ private:
 	bool colContainsSymbol(char**& board, int col, char symbol) const;
 	bool diagContainsSymbol(char**& board, int diag, char symbol) const;
 
-	void placeSymbolInRow(char**& board, int row) const;
-	void placeSymbolInCol(char**& board, int col) const;
-	void placeSymbolInDiag(char**& board, int diag) const;
+	bool placeSymbolInRow(char**& board, int row) const;
+	bool placeSymbolInCol(char**& board, int col) const;
+	bool placeSymbolInDiag(char**& board, int diag) const;
 private:
 	unsigned int strategy;
 	char mSymbol; //X or O

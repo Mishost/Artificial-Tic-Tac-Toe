@@ -92,20 +92,20 @@ bool Player::findPlace(char**& board, int row, int col) const
 		//we can create a pair on a row
 		if (!rowContainsSymbol(board, row, oppSymbol) && rowContainsSymbol(board, row, ' '))
 		{
-			placeSymbolInRow(board, i);
-			return true;
+			if (placeSymbolInRow(board, i))
+				return true;
 		}
 		//on a column
 		else if (!colContainsSymbol(board, col, oppSymbol) && colContainsSymbol(board, col, ' '))
 		{
-			placeSymbolInCol(board, i);
-			return true;
+			if (placeSymbolInCol(board, i))
+				return true;
 		}
 		//or on a diagonal
 		else if (i > 0 && !diagContainsSymbol(board, i, oppSymbol) && diagContainsSymbol(board, i, ' '))
 		{
-			placeSymbolInDiag(board, i);
-			return true;
+			if (placeSymbolInDiag(board, i))
+				return true;
 		}
 	}
 	return false;
@@ -139,21 +139,32 @@ bool Player::checkMiddleTileWin(char**& board, int row, int col, char symbol, bo
 	int rowM, colM, rowAddition, colAddition;
 	rowAddition = colAddition = 0;
 
-	if (row == 0)
+	switch (row)
+	{
+	case 0:
 		rowM = 1;
-	else if (row == 1)
+		break;
+	case 1:
 		rowM = 0;
-	else
+		break;
+	default:
 		rowM = -1;
+	}
 
-	if (col == 0)
+	switch (col)
+	{
+	case 0:
 		colM = 1;
-	else if (col == 1)
+		break;
+	case 1:
 		colM = 0;
-	else
+		break;
+	default:
 		colM = -1;
+	}
 
-	//we only have 1 row and col which do not involve corner tiles so we have only 2 cases
+	//we only have 1 row and col which do not involve corner tiles so we have only 2 case
+
 	if (board[row][col] == board[row + 1 * rowM][col + 1 * colM]
 		&& board[row + 2 * rowM][col + 2 * colM] == ' ')
 	{
@@ -227,9 +238,8 @@ bool Player::wonLine(char**& board, bool checkRow) const
 		{
 			//we are eliminating possible winning lines by checking if 2 nearby tiles are different
 			//or if they are not both our symbol
-			if (checkRow && (board[i][j] != board[i][j - 1] || board[i][j] != mSymbol))
-				flag = false;
-			else if (!checkRow && (board[j][i] != board[j - 1][i] || board[j][i] != mSymbol))
+			if ((checkRow && (board[i][j] != board[i][j - 1] || board[i][j] != mSymbol))
+				|| (!checkRow && (board[j][i] != board[j - 1][i] || board[j][i] != mSymbol)))
 				flag = false;
 		}
 		if (flag)
@@ -246,17 +256,14 @@ char Player::getOppSymbol() const
 bool Player::isCornerTile(int row, int col) const
 {
 	//the sum of the rows and cols of a corner tile is always an even number
-	//we don't include the center tile by making sure that the row and col are not both 1s
-	if ((row + col) % 2 == 0 && row != 1 && col != 1)
-		return true;
-	return false;
+	//we exclude the center tile by making sure that the row and col are not both 1s
+	return ((row + col) % 2 == 0 && row != 1 && col != 1);
 }
 
 bool Player::isMiddleTile(int row, int col) const
 {
-	if (!isCornerTile(row, col) && (row + col) != 2) //we check their sum in order to exclude the center piece
-		return true;
-	return false;
+	//we check their sum in order to exclude the center piece
+	return(!isCornerTile(row, col) && (row + col) != 2);
 }
 
 bool Player::rowContainsSymbol(char**& board, int row, char symbol) const
@@ -279,15 +286,14 @@ bool Player::diagContainsSymbol(char**& board, int diag, char symbol) const
 {
 	for (unsigned int i = 0; i < ROWSNUM; ++i)
 	{
-		if (diag == 1 && board[i][i] == symbol)
-			return true;
-		else if (diag == 2 && board[ROWSNUM - i - 1][ROWSNUM - i - 1] == symbol)
+		if ((diag == 1 && board[i][i] == symbol)
+			|| (diag == 2 && board[ROWSNUM - i - 1][ROWSNUM - i - 1] == symbol))
 			return true;
 	}
 	return false;
 }
 
-void Player::placeSymbolInRow(char**& board, int row) const
+bool Player::placeSymbolInRow(char**& board, int row) const
 {
 	for (unsigned int i = 0; i < COLSNUM; ++i)
 	{
@@ -295,14 +301,15 @@ void Player::placeSymbolInRow(char**& board, int row) const
 		{
 			board[row][i] = mSymbol;
 			if (canWin(board, mSymbol, false))
-				break;
+				return true;
 			else //if we are not making a valuable pair, we should try another
 				board[row][i] = ' ';
 		}
 	}
+	return false;
 }
 
-void Player::placeSymbolInCol(char**& board, int col) const
+bool Player::placeSymbolInCol(char**& board, int col) const
 {
 	for (unsigned int i = 0; i < ROWSNUM; ++i)
 	{
@@ -310,14 +317,15 @@ void Player::placeSymbolInCol(char**& board, int col) const
 		{
 			board[i][col] = mSymbol;
 			if (canWin(board, mSymbol, false)) 
-				break;
+				return true;
 			else //if we are not making a valuable pair, we should try another
 				board[i][col] = ' '; 
 		}
 	}
+	return false;
 }
 
-void Player::placeSymbolInDiag(char**& board, int diag) const
+bool Player::placeSymbolInDiag(char**& board, int diag) const
 {
 	for (unsigned int i = 0; i < ROWSNUM; ++i)
 	{
@@ -325,7 +333,7 @@ void Player::placeSymbolInDiag(char**& board, int diag) const
 		{
 			board[i][i] = mSymbol;
 			if (canWin(board, mSymbol, false)) 
-				return;
+				return true;
 			else //if we are not making a valuable pair, we should try another
 				board[i][i] = ' ';
 		}
@@ -333,9 +341,10 @@ void Player::placeSymbolInDiag(char**& board, int diag) const
 		{
 			board[ROWSNUM - i - 1][ROWSNUM - i - 1] = mSymbol;
 			if (canWin(board, mSymbol, false)) 
-				return;
+				return true;
 			else //if we are not making a valuable pair, we should try another
 				board[ROWSNUM - i - 1][ROWSNUM - i - 1] = ' ';
 		}
 	}
+	return false;
 }
